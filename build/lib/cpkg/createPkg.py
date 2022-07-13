@@ -21,7 +21,7 @@ class PathNotFoundError(Exception):
         return 'path is not found'
 
 
-class PathNotFoundError(Exception):
+class NameNotFoundError(Exception):
     def __init__(self, name):
         super()
         self.name = name
@@ -31,7 +31,7 @@ class PathNotFoundError(Exception):
 
 
 class create(object):
-    def __init__(self, *new, entry_points='""', **kw):
+    def __init__(self, *new, entry_points='""', ismod=False, modPath=None, **kw):
         '''
         Params:
         entry_points:Not required:dict
@@ -41,6 +41,31 @@ class create(object):
             required:path,dirName,pkgName,author,author_email,description,url,project_urls,classifiers,python_requires,install_requires
         '''
         super(create, self)
+        if ismod:
+            if modPath != None:
+                self.mod(new,  kw, modPath, entry_points)
+            else:
+                raise NameNotFoundError('modPath')
+        else:
+            self.default(new, kw, entry_points)
+
+    def mod(self, new, kw, modPath, entry_points='""'):
+        print(new, kw, modPath)
+        with open(modPath, 'r')as m:
+            mod = eval('{'+m.read()+'}')
+        try:
+            mod['python_requires']
+        except KeyError:
+            try:
+                python_requires = kw['python_requires']
+            except KeyError:
+                raise NameNotFoundError('python_requires')
+        for key, value in mod.items():
+            kw[key] = value
+        print(kw)
+        self.default(new,  kw, entry_points)
+
+    def default(self, new, kw, entry_points='""'):
         try:
             kw['path']
         except KeyError:
@@ -155,9 +180,14 @@ setuptools.setup(
         self.createFile('./'+d+'/', 'setup.py', setup)
         self.createDir('./'+d+'/'+d)
         print('INFO[004] create the src dir')
-        self.createFile('./'+d+'/'+d, '__init__.py', '# your python file')
+        self.createFile('./'+d+'/'+d, '__init__.py', f'from .{n} import *')
         print('INFO[005] create the __init__.py file')
+        self.createFile('./'+d+'/'+d, f'{n}.py', '# your python file')
+        print(f'INFO[006] create the {n}.py file')
         print(f'{n} is success')
+        print(f'''Pleace use:
+              cd {n}
+              python setup.py sdist''')
 
     def createDir(self, dirName):
         name = dirName
@@ -182,3 +212,31 @@ setuptools.setup(
     def createFile(self, path, name, value):
         with open(path+name, 'w')as f:
             f.write(value)
+
+
+class CreateModule():
+    def __init__(self, path, **kw):
+        try:
+            author = kw['author']
+        except KeyError:
+            raise NameNotFoundError('author')
+        try:
+            author_email = kw['author_email']
+        except KeyError:
+            raise NameNotFoundError('author_email')
+        try:
+            classifiers = kw['classifiers']
+        except KeyError:
+            raise NameNotFoundError('classifiers')
+        try:
+            python_requires = kw['python_requires']
+        except KeyError:
+            python_requires = None
+        s = '''"author":"{}",
+"author_email":"{}",
+"classifiers":{}'''.format(author, author_email, classifiers)
+        s = s + \
+            ',\n"python_requires":"{}"'.format(
+                python_requires) if python_requires != None else s
+        with open(path+'.cpgmod', 'w')as mod:
+            mod.write(s)

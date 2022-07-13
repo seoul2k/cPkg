@@ -1,6 +1,6 @@
 from .createPkg import *
 __author__ = 'xiongtianshuo'
-__version__ = '0.2.15'
+__version__ = '0.4.21'
 __all__ = [
     'NameNotSpecificationError',
     'PathNotFoundError',

@@ -57,3 +57,9 @@ createpkg -h
 >>Add new elements from setup.py
 >### 0.2.14 2022 5 19
 >>Repair Bug
+>### 0.3.19 2022 7 7
+>>Add the functions of creating templates and identifying templates(Command is not supported temporarily)
+>### 0.4.19 2022 7 13
+>>Add The createmod command supports the functions of creating and identifying templates
+>### 0.4.21 2022 7 13
+>>Repair Bug

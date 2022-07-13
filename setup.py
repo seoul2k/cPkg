@@ -1,11 +1,9 @@
 import setuptools
-import os
-from platform import system
-with open("README.md", "r", encoding="utf-8") as fh:
+with open("README.md", "r") as fh:
     long_description = fh.read()
 setuptools.setup(
     name="cpkg",
-    version="0.2.15",
+    version="0.4.21",
     author="xiongtianshuo",
     author_email="Mr_Xiongts@163.com",
     description="A package that creates a package",
@@ -26,16 +24,20 @@ setuptools.setup(
     ],
     packages=['cpkg/'],
     python_requires=">=3",
+    install_requires=[''],
+    platforms='any',
     options={
         'entry_points': {
             'console_scripts': [
-                'createpkg = cpkg.cpkg:main'
+                'createpkg = cpkg.cpkg:main',
+                'createmod = cpkg.cmod:main'
             ]
         }
     },
     entry_points={
         'console_scripts': [
-            'createpkg = cpkg.cpkg:main'
+            'createpkg = cpkg.cpkg:main',
+            'createmod = cpkg.cmod:main'
         ]
     }
 )

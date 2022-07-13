@@ -1,3 +1,4 @@
 [console_scripts]
+createmod = cpkg.cmod:main
 createpkg = cpkg.cpkg:main
 
